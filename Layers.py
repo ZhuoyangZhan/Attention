@@ -61,8 +61,6 @@ class AttentionWrapper(Layer):
         self.weight = x[1]
         print(self.hidden_state.shape)
         print(self.weight.shape)
-        
-        
         mul = K.sum(self.hidden_state * self.weight, axis=1)
         print('mul', mul.shape)
         return mul
