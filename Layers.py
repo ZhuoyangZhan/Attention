@@ -23,8 +23,9 @@ class NonMasking(Layer):
 
 class Attention(Layer):
 
-    def __init__(self, output_dim, **kwargs):
+    def __init__(self, time_step, output_dim, **kwargs):
         self.output_dim = output_dim
+        self.time_step = time_step
         super(Attention, self).__init__(**kwargs)
 
     def build(self, input_shape):
@@ -37,13 +38,13 @@ class Attention(Layer):
         super(Attention, self).build(input_shape)  # Be sure to call this somewhere!
 
     def call(self, x):
-        a = K.reshape(K.softmax(K.sum(K.dot(x, self.kernel),axis=-1)), (-1,15,1))
+        a = K.reshape(K.softmax(K.sum(K.dot(x, self.kernel),axis=-1)), (-1,self.time_step,1))
         #a = K.softmax(K.sum(K.dot(x, self.kernel),axis=-1))
         return a
 
     def compute_output_shape(self, input_shape):
         b = (input_shape[0], input_shape[1])
-        print(b)
+        #print(b)
         return b
     
 class AttentionWrapper(Layer):
@@ -61,11 +62,18 @@ class AttentionWrapper(Layer):
         self.weight = x[1]
         print(self.hidden_state.shape)
         print(self.weight.shape)
+        
+        '''This is wrong'''
+        #h = K.reshape(self.hidden_state, (15,1024))
+        #w = K.reshape(self.weight, (20,1)) 
+        #print('w', w.shape)
+        #mul = h * w#[-1][0]
+        
         mul = K.sum(self.hidden_state * self.weight, axis=1)
-        print('mul', mul.shape)
+        #print('mul', mul.shape)
         return mul
 
     def compute_output_shape(self, input_shape):
         b = (input_shape[0][0], int(self.hidden_state.shape[-1]))
-        print(b)
+        #print(b)
         return b
