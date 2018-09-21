@@ -63,12 +63,6 @@ class AttentionWrapper(Layer):
         print(self.hidden_state.shape)
         print(self.weight.shape)
         
-        '''This is wrong'''
-        #h = K.reshape(self.hidden_state, (15,1024))
-        #w = K.reshape(self.weight, (20,1)) 
-        #print('w', w.shape)
-        #mul = h * w#[-1][0]
-        
         mul = K.sum(self.hidden_state * self.weight, axis=1)
         #print('mul', mul.shape)
         return mul
